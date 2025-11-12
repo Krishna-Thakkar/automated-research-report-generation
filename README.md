@@ -162,11 +162,6 @@ automated-report-generation/
    TAVILY_API_KEY=your_tavily_api_key
    ```
 
-5. **Initialize Database**
-   ```bash
-   python -c "from research_and_analyst.database.db_config import init_db; init_db()"
-   ```
-
 ---
 
 ## 🎯 How It Works
