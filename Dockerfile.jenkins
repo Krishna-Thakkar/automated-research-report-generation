@@ -1,4 +1,4 @@
-# for research report generation CI/CD pipeline
+# for research report generation CI/CD pipeline (to run the jenkins file inside a container)
 
 FROM jenkins/jenkins:lts-jdk17
 
