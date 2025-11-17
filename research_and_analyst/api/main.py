@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime
 import os
 from research_and_analyst.api.routes import report_routes
 
@@ -24,6 +25,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for container orchestration"""
+    return {
+        "status": "healthy",
+        "service": "research-report-generation",
+        "timestamp": datetime.now().isoformat()
+    }
 
 # Register Routes
 app.include_router(report_routes.router)
