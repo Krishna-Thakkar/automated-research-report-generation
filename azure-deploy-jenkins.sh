@@ -8,9 +8,9 @@ set -e
 # Configuration
 RESOURCE_GROUP="research-report-jenkins-rg"
 LOCATION="eastus"
-STORAGE_ACCOUNT="reportjenkinsstore"
+STORAGE_ACCOUNT="reportjenkinsstore$(date +%s | cut -c1-4)"    # added first 4 numbers of date
 FILE_SHARE="jenkins-data"
-ACR_NAME="reportjenkinsacr"
+ACR_NAME="reportjenkinsacr$(date +%s | cut -c1-4)"    # added first 4 numbers of date
 CONTAINER_NAME="jenkins-research-report"
 DNS_NAME_LABEL="jenkins-research-$(date +%s | tail -c 6)"
 JENKINS_IMAGE_NAME="custom-jenkins"
@@ -20,7 +20,7 @@ JENKINS_IMAGE_TAG="lts-git-configured"
 SUBSCRIPTION_ID="${1:-${AZURE_SUBSCRIPTION_ID}}"
 
 echo "╔════════════════════════════════════════════════════════╗"
-echo "║  Deploying Jenkins for Research Report Generation     ║"
+echo "║  Deploying Jenkins for Research Report Generation      ║"
 echo "╚════════════════════════════════════════════════════════╝"
 echo ""
 
@@ -40,7 +40,7 @@ if [ -n "$SUBSCRIPTION_ID" ]; then
         exit 1
     fi
 else
-    echo "ℹ️No subscription ID provided. Using current default subscription."
+    echo "No subscription ID provided. Using current default subscription."
     CURRENT_SUB=$(az account show --query id -o tsv)
     echo "   Current subscription: $CURRENT_SUB"
 fi
