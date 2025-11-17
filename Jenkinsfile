@@ -23,7 +23,6 @@ pipeline {
         STORAGE_ACCOUNT_KEY = credentials('storage-account-key')
 
         // API Keys
-        OPENAI_API_KEY = credentials('OPENAI_API_KEY')
         GOOGLE_API_KEY = credentials('GOOGLE_API_KEY')
         GROQ_API_KEY = credentials('GROQ_API_KEY')
         TAVILY_API_KEY = credentials('TAVILY_API_KEY')
@@ -46,7 +45,7 @@ pipeline {
                     checkout([
                         $class: 'GitSCM',
                         branches: [[name: '*/main']],
-                        userRemoteConfigs: [[url: 'https://github.com/sunnysavita10/automated-research-report-generation.git']]
+                        userRemoteConfigs: [[url: 'https://github.com/Krishna-Thakkar/automated-research-report-generation.git']]
                     ])
                 }
             }
@@ -162,7 +161,6 @@ pipeline {
                           --name $APP_NAME \
                           --resource-group $APP_RESOURCE_GROUP \
                           --secrets \
-                            openai-api-key=$OPENAI_API_KEY \
                             google-api-key=$GOOGLE_API_KEY \
                             groq-api-key=$GROQ_API_KEY \
                             tavily-api-key=$TAVILY_API_KEY
@@ -171,7 +169,6 @@ pipeline {
                           --name $APP_NAME \
                           --resource-group $APP_RESOURCE_GROUP \
                           --set-env-vars \
-                            OPENAI_API_KEY=secretref:openai-api-key \
                             GOOGLE_API_KEY=secretref:google-api-key \
                             GROQ_API_KEY=secretref:groq-api-key \
                             TAVILY_API_KEY=secretref:tavily-api-key \
