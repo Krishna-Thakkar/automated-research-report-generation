@@ -31,7 +31,7 @@ pipeline {
         // App config
         APP_RESOURCE_GROUP = 'research-report-app-rg'
         APP_NAME = 'research-report-app'
-        ACR_NAME = 'reportjenkinsacr$(date +%s | cut -c1-4)'
+        ACR_NAME = 'researchreportacr'
         IMAGE_NAME = 'research-report-app'
         CONTAINER_ENV = 'research-report-env'
     }

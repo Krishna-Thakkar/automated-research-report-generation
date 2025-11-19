@@ -8,9 +8,9 @@ set -e
 # Configuration
 RESOURCE_GROUP="research-report-jenkins-rg"
 LOCATION="eastus"
-STORAGE_ACCOUNT="reportjenkinsstore$(date +%s | cut -c1-4)"    # added first 4 numbers of date
+STORAGE_ACCOUNT="researchreportstore"
 FILE_SHARE="jenkins-data"
-ACR_NAME="reportjenkinsacr$(date +%s | cut -c1-4)"    # added first 4 numbers of date
+ACR_NAME="researchreportacr"
 CONTAINER_NAME="jenkins-research-report"
 DNS_NAME_LABEL="jenkins-research-$(date +%s | tail -c 6)"
 JENKINS_IMAGE_NAME="custom-jenkins"
