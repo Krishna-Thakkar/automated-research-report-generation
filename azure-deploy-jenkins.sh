@@ -6,11 +6,12 @@
 set -e
 
 # Configuration
+UNIQUE_ID="${AZURE_UNIQUE_ID:-kt}"
 RESOURCE_GROUP="research-report-jenkins-rg"
 LOCATION="eastus"
-STORAGE_ACCOUNT="researchreportstore"
+STORAGE_ACCOUNT="reportjenkinsstore${UNIQUE_ID}"
 FILE_SHARE="jenkins-data"
-ACR_NAME="researchreportacr"
+ACR_NAME="reportjenkinsacr${UNIQUE_ID}"
 CONTAINER_NAME="jenkins-research-report"
 DNS_NAME_LABEL="jenkins-research-$(date +%s | tail -c 6)"
 JENKINS_IMAGE_NAME="custom-jenkins"
@@ -20,7 +21,7 @@ JENKINS_IMAGE_TAG="lts-git-configured"
 SUBSCRIPTION_ID="${1:-${AZURE_SUBSCRIPTION_ID}}"
 
 echo "╔════════════════════════════════════════════════════════╗"
-echo "║  Deploying Jenkins for Research Report Generation      ║"
+echo "║  Deploying Jenkins for Research Report Generation     ║"
 echo "╚════════════════════════════════════════════════════════╝"
 echo ""
 

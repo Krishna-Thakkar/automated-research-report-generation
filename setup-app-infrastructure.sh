@@ -5,13 +5,15 @@
 
 set -e
 
+UNIQUE_ID="${AZURE_UNIQUE_ID:-kt}"
+
 # Configuration
 APP_RESOURCE_GROUP="research-report-app-rg"
 LOCATION="eastus"
-APP_ACR_NAME="researchreportacr"
+APP_ACR_NAME="researchreportacr${UNIQUE_ID}"
 CONTAINER_ENV="research-report-env"
 # Generate unique storage account name (max 24 chars, lowercase, alphanumeric only)
-STORAGE_ACCOUNT="reportapp$(date +%s | tail -c 7)"
+STORAGE_ACCOUNT="reportapp${UNIQUE_ID}"
 FILE_SHARE="generated-reports"
 
 echo "╔════════════════════════════════════════════════════════╗"
