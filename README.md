@@ -5,29 +5,35 @@
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green.svg)](https://fastapi.tiangolo.com/)
 [![LangGraph](https://img.shields.io/badge/LangGraph-Latest-orange.svg)](https://langchain-ai.github.io/langgraph/)
+[![Azure](https://img.shields.io/badge/Azure-Deployed-0078D4.svg)](https://azure.microsoft.com/)
+[![Jenkins](https://img.shields.io/badge/Jenkins-CI%2FCD-D24939.svg)](https://www.jenkins.io/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
 ## 🌟 Overview
 
-**Automated Report Generation** is a sophisticated research automation system that leverages LangGraph workflow orchestration to create detailed, professional reports on any given topic. The system creates intelligent analyst agents that conduct web research, generate interview-style Q&A sessions, and compile comprehensive reports with structured sections.
+**Automated Report Generation** is a sophisticated research automation system that leverages LangGraph workflow orchestration to create detailed, professional reports on any topic. The system creates intelligent analyst agents that conduct web research, generate interview-style Q&A sessions, and compile comprehensive reports with structured sections.
 
-The platform features a complete web interface with user authentication, real-time progress tracking, and multi-format report output (PDF and DOCX), making it ideal for researchers, content creators, and analysts who need high-quality reports quickly.
+**Key Highlights:**
+- 🤖 AI-powered analyst agents with web research capabilities
+- 📝 Multi-format output (PDF & DOCX)
+- ☁️ Production-ready Azure deployment with CI/CD
+- 🔐 Secure authentication and encrypted storage
+- 🚀 Automated deployment pipeline with Jenkins
 
 ---
 
 ## ✨ Features
 
-- 🤖 **AI-Powered Analyst Agents**: Automatically creates specialized analyst personas based on your topic
-- 🔍 **Intelligent Web Research**: Uses Tavily API to gather real-time information from the web
+- 🤖 **AI-Powered Analyst Agents**: Creates specialized analyst personas based on your research topic
+- 🔍 **Intelligent Web Research**: Real-time information gathering using Tavily API
 - 👥 **Human-in-the-Loop**: Integrates user feedback to refine research direction
-- 📝 **Multi-Section Reports**: Generates structured reports with introduction, body sections, and conclusion
-- 📄 **Multi-Format Output**: Exports reports in both PDF and DOCX formats
-- 🔐 **Secure Authentication**: User signup/login with encrypted password storage
-- 🎯 **Modular Workflow**: Built with reusable LangGraph nodes for easy customization
-- 🗄️ **Data Persistence**: SQLite database for user management
-- 📁 **Organized Storage**: Timestamped folders for each generated report
+- 📝 **Structured Reports**: Generates introduction, body sections, and conclusion
+- 📄 **Multi-Format Export**: PDF and DOCX output formats
+- ☁️ **Cloud-Native**: Fully containerized deployment on Azure
+- 🔄 **CI/CD Pipeline**: Automated build and deployment with Jenkins
+- 🔐 **Secure Authentication**: Encrypted password storage with SQLite
 
 ---
 
@@ -42,6 +48,20 @@ The application follows a sophisticated multi-stage workflow orchestrated by Lan
 ### Component Architecture
 
 ![Alt Text](assets/component_architecture.png)
+
+### Cloud Deployment Architecture
+
+```
+GitHub Repository
+      ↓ (webhook trigger)
+Jenkins CI/CD (Azure Container Instance)
+      ↓ (build & push)
+Azure Container Registry
+      ↓ (deploy)
+Azure Container Apps (Production)
+      ↓ (persist reports)
+Azure Blob Storage
+```
 
 ---
 
@@ -118,49 +138,185 @@ automated-report-generation/
 
 ---
 
-## 🚀 Installation
+
+## 🚀 Quick Start
+
+### Local Development
+
+```bash
+# Clone repository
+git clone https://github.com/Krishna-Thakkar/automated-research-report-generation.git
+cd automated-research-report-generation
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure environment variables
+cat > .env << EOF
+GROQ_API_KEY=your_groq_api_key
+GOOGLE_API_KEY=your_google_api_key
+TAVILY_API_KEY=your_tavily_api_key
+LLM_PROVIDER=google
+EOF
+
+# Run application
+uvicorn research_and_analyst.api.main:app --host 0.0.0.0 --port 8000
+```
+
+Access at: `http://localhost:8000`
+
+---
+
+## ☁️ Cloud Deployment (Azure)
 
 ### Prerequisites
+- Azure account with active subscription
+- Azure CLI installed (`az login` completed)
+- GitHub repository access
+- API keys (Groq/Google, Tavily)
 
-- Python 3.8 or higher
-- pip package manager
-- Git
+### Deployment Overview
 
-### Step-by-Step Setup
+This deployment sets up:
+- ✅ Jenkins CI/CD server on Azure Container Instances
+- ✅ Azure Container Registry for Docker images
+- ✅ Azure Container Apps for production hosting
+- ✅ Azure Blob Storage for report persistence
+- ✅ Automated GitHub webhook integration
 
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/Krishna-Thakkar/automated-research-report-generation.git
-   cd automated-research-report-generation
-   ```
+### 🎯 Deployment Steps
 
-2. **Create Virtual Environment**
-   ```bash
-   python -m venv venv
-   
-   # On Windows
-   venv\Scripts\activate
-   
-   # On macOS/Linux
-   source venv/bin/activate
-   ```
+#### 1. Deploy Jenkins Infrastructure
 
-3. **Install Dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+bash ./azure-deploy-jenkins.sh
+```
 
-4. **Configure Environment Variables**
-   
-   Create a `.env` file in the root directory:
-   ```env
-   # LLM API Keys
-   GROQ_API_KEY=your_groq_api_key
-   GOOGLE_API_KEY=your_google_api_key
+**Output:** You'll receive a Jenkins URL and instructions to retrieve the admin password.
 
-   # Web Search API
-   TAVILY_API_KEY=your_tavily_api_key
-   ```
+```bash
+# Get Jenkins password
+az container exec \
+  --resource-group research-report-jenkins-rg \
+  --name jenkins-research-report \
+  --exec-command 'cat /var/jenkins_home/secrets/initialAdminPassword'
+```
+
+Save the password for Jenkins login (username: `admin`).
+
+#### 2. Configure Jenkins
+
+1. Access Jenkins at the provided URL
+2. Login with admin credentials
+3. Install suggested plugins
+4. Navigate to **Manage Jenkins** → **Security** → Enable **"Enable proxy compatibility"** under CSRF Protection
+
+#### 3. Provision Azure Infrastructure
+
+```bash
+bash ./setup-app-infrastructure.sh
+```
+
+**Output:** You'll receive credentials for ACR, Storage Account, and other Azure resources. Save these values.
+
+#### 4. Setup Azure Service Principal
+
+```bash
+az ad sp create-for-rbac \
+  --name "jenkins-research-report-sp" \
+  --role Contributor \
+  --scopes /subscriptions/$(az account show --query id -o tsv)
+```
+
+Save the output JSON (appId, password, tenant).
+
+#### 5. Add Credentials to Jenkins
+
+Navigate to **Manage Jenkins** → **Credentials** → **(global)** → **Add Credentials**
+
+Add the following as **Secret text** credentials:
+
+**From Step 3 output:**
+- `acr-username` → Your ACR username
+- `acr-password` → Your ACR password
+- `storage-account-name` → Your storage account name
+- `storage-account-key` → Your storage account key
+
+**From Step 4 output:**
+- `azure-client-id` → appId from JSON
+- `azure-client-secret` → password from JSON
+- `azure-tenant-id` → tenant from JSON
+- `azure-subscription-id` → Run: `az account show --query id -o tsv`
+
+**API Keys:**
+- `GROQ_API_KEY` → Your Groq API key
+- `GOOGLE_API_KEY` → Your Google API key
+- `TAVILY_API_KEY` → Your Tavily API key
+- `LLM_PROVIDER` → `google` or `groq`
+
+#### 6. Build Initial Docker Image
+
+```bash
+bash ./build-and-push-docker-image.sh
+```
+
+This builds and pushes your Docker image to Azure Container Registry.
+
+#### 7. Create Jenkins Pipeline
+
+1. **Create Pipeline:**
+   - Jenkins Dashboard → **New Item**
+   - Name: `Research-Report-Pipeline`
+   - Type: **Pipeline** → **OK**
+
+2. **Configure:**
+   - Pipeline → **Pipeline script from SCM**
+   - SCM: **Git**
+   - Repository: `https://github.com/Krishna-Thakkar/automated-research-report-generation.git`
+   - Branch: `*/main`
+   - Script Path: `Jenkinsfile`
+   - **Save**
+
+#### 8. Setup GitHub Webhook
+
+1. Go to GitHub repo: **Settings** → **Webhooks** → **Add webhook**
+2. Payload URL: `http://[YOUR-JENKINS-URL]:8080/github-webhook/`
+3. Content type: `application/json`
+4. Events: **Just the push event**
+5. **Add webhook**
+
+#### 9. Install Required Plugin
+
+- **Manage Jenkins** → **Plugins** → **Available plugins**
+- Search and install: **Workspace Cleanup**
+
+#### 10. Deploy! 🚀
+
+```bash
+# Push code to trigger deployment
+git add .
+git commit -m "Deploy to Azure"
+git push origin main
+```
+
+Watch the pipeline execute in Jenkins. After successful completion, you'll see:
+
+```
+✅ Deployment successful!
+Access your app at: https://[your-app-name].[region].azurecontainerapps.io/
+```
+
+### 🎉 That's It!
+
+Your application is now live with full CI/CD! Every git push will automatically:
+1. Trigger Jenkins pipeline
+2. Build Docker image
+3. Push to Azure Container Registry
+4. Deploy to Azure Container Apps
 
 ---
 
@@ -224,17 +380,20 @@ builder.add_node("finalize_report", self.finalize_report)
 
 ## 🛠️ Tech Stack
 
-| Category | Technology | Purpose |
-|----------|-----------|---------|
-| **Workflow Orchestration** | LangGraph | Multi-agent workflow management |
-| **Web Framework** | FastAPI | REST API and web interface |
-| **Database** | SQLite | User data and session storage |
-| **LLM Integration** | Google/Groq | AI-powered content generation |
-| **Web Search** | Tavily API | Real-time web research |
-| **Document Generation** | python-docx, ReportLab | DOCX and PDF creation |
-| **Frontend** | HTML/CSS | User interface |
-| **Authentication** | bcrypt | Password encryption |
-| **Configuration** | YAML, python-dotenv | Settings management |
+### Core Application
+- **LangGraph** - Workflow orchestration
+- **FastAPI** - Web framework
+- **SQLite** - Database
+- **Google/Groq** - LLM providers
+- **Tavily** - Web search
+- **python-docx, ReportLab** - Document generation
+
+### Cloud Infrastructure
+- **Azure Container Apps** - Hosting & auto-scaling
+- **Azure Container Registry** - Image repository
+- **Jenkins** - CI/CD automation
+- **Azure Blob Storage** - Report persistence
+- **Azure Monitor** - Application insights
 
 ---
 
@@ -242,44 +401,32 @@ builder.add_node("finalize_report", self.finalize_report)
 
 ### Starting the Application
 
-1. **Launch the FastAPI Server**
+1. **Launch the FastAPI Server for local usage**
    ```bash
    uvicorn research_and_analyst.api.main:app --host 0.0.0.0 --port 8000
    ```
 
-2. **Access the Application**
-   - Open browser: `http://localhost:8000`
-   - Navigate to signup page to create account
-   - Login with credentials
+2. **Access Application:**
+   - Local: `http://localhost:8000`
+   - Production: Your Azure Container Apps URL
 
-### Generating a Report
+3. **Sign Up / Login:**
+   - Create account with email and password
+   - Login to dashboard
 
-1. **Login to Dashboard**
-   - Enter your credentials
-   - Access main dashboard
-
-2. **Submit Research Topic**
+4. **Submit Research Request:**
    ```
-   Topic: "Impact of Generative AI on Jobs"
-   Feedback: "Focus on 2024-2025 trends and industry-specific impacts"
+   Topic: Impact of AI on Healthcare
+   Feedback: Focus on 2024-2025 developments and patient outcomes
    ```
 
-3. **Monitor Progress**
-   - Real-time status updates displayed
-   - View current workflow stage
-   - Estimated completion time
+5. **Monitor Progress:**
+   - Real-time workflow status
+   - View current processing stage
 
-4. **Download Report**
-   - Report automatically saved in `generated_report/` directory
-   - Access both PDF and DOCX versions
-   - Folder named: `[Topic]_[Timestamp]`
-
-### Example Command Line Usage
-
-```bash
-# Run with custom configuration
-uvicorn research_and_analyst.api.main:app --host 0.0.0.0 --port 8000 --reload
-```
+6. **Download Report:**
+   - Access from `generated_report/[Topic_Timestamp]/`
+   - Available in PDF and DOCX formats
 
 ---
 
@@ -302,6 +449,26 @@ uvicorn research_and_analyst.api.main:app --host 0.0.0.0 --port 8000 --reload
    - Comprehensive coverage of topic
 4. **Conclusion**: Key findings and synthesis
 5. **Sources**: Referenced web sources from research
+
+---
+
+## 🔧 Troubleshooting
+
+**Jenkins Not Accessible:**
+```bash
+az container show --resource-group research-report-jenkins-rg --name jenkins-research-report
+az container logs --resource-group research-report-jenkins-rg --name jenkins-research-report
+```
+
+**Container App Issues:**
+```bash
+az containerapp logs show --name research-report-app --resource-group research-report-app-rg
+```
+
+**Docker Push Failed:**
+```bash
+az acr login --name [your-acr-name]
+```
 
 ---
 
@@ -330,11 +497,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 👥 Contributors
+## 👥 Author
 
-**Project Maintainer**: [Krishna Thakkar](https://github.com/Krishna-Thakkar)
-
-Special thanks to all contributors who have helped shape this project!
+**Krishna Thakkar** - [GitHub](https://github.com/Krishna-Thakkar)
 
 ---
 
@@ -347,19 +512,17 @@ Special thanks to all contributors who have helped shape this project!
 
 ## 🌟 Acknowledgments
 
-- Built with [LangGraph](https://langchain-ai.github.io/langgraph/) for workflow orchestration
-- Powered by [FastAPI](https://fastapi.tiangolo.com/) for high-performance API
-- Web research enabled by [Tavily](https://tavily.com/)
-- AI capabilities provided by Google and Groq
+- [LangGraph](https://langchain-ai.github.io/langgraph/) - Workflow orchestration
+- [FastAPI](https://fastapi.tiangolo.com/) - Web framework
+- [Tavily](https://tavily.com/) - Web search API
+- [Microsoft Azure](https://azure.microsoft.com/) - Cloud infrastructure
 
 ---
 
 <div align="center">
 
-**Made with ❤️ by Krishna Thakkar**
+**If you find this project useful, please ⭐ star it on GitHub!**
 
-If you find this project useful, please consider giving it a ⭐ on GitHub!
-
-[Report Bug](https://github.com/Krishna-Thakkar/automated-research-report-generation/issues) · [Request Feature](https://github.com/Krishna-Thakkar/automated-research-report-generation/issues)
+[🐛 Report Bug](https://github.com/Krishna-Thakkar/automated-research-report-generation/issues) · [✨ Request Feature](https://github.com/Krishna-Thakkar/automated-research-report-generation/issues)
 
 </div>
